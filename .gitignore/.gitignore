@@ -1,0 +1,67 @@
+JS---------------
+
+ var objData = {};
+                var Products = [];
+                if ($(".chkCus:checked").length > 0) {
+                    $(".chkCus:checked").each(function () {
+                        var _product = new Object();
+                        var level = $(this).data('level');
+                        var ids = $(this).data('id');
+                        _product.Level = level;
+                        _product.Id = ids;
+                        Products.push(_product);
+                    })
+                }
+                objData = {
+                    OfferName: txtOfferName,
+                    OfferText: content,
+                    StartDate: startDate,
+                    EndDate: endDate,
+                    Product: Products//Object
+                }
+                
+                $.ajax({
+                    type: "post",
+                    url: "SubmitProductOffer",
+                    contentType: "application/json; charset=utf-8",
+                    data: "{data:" + JSON.stringify(objData) + "}",                   
+                    dataType: "json",
+                    async: true,
+                    success: function (result) {
+                        console.log(result);
+                        if (result.success) {
+                            //window.location = "/Admin/Coupon/management";
+                            $.dialog.successTips("Product offer created successfully");
+                        }                        
+                        else {
+                            $.dialog.errorTips("Unable to save product offer");
+                        }
+                    },
+                    error: function () {
+                    }
+                });
+
+
+COntroller/Action:
+ public JsonResult SubmitProductOffer(ProductOffer data)
+        {
+            bool retVal = false;
+            return json("");
+            }
+
+--------------------------------------------------------------------------
+ Class Model:
+  public class ProductOffer
+    {
+        public string OfferName { get; set; }
+        [AllowHtml]
+        public string OfferText { get; set; }
+        public string StartDate { get; set; }
+        public string EndDate { get; set; }
+        public List<ProductOffers> Product { get; set; }
+    }
+    public class ProductOffers
+    {
+        public string Level { get; set; }
+        public string Id { get; set; }
+    }
